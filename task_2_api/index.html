@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Search App</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            text-align: center;
+            color: white;
+            background: black;
+            overflow-x: hidden;
+        }
+
+        /* Stars background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+            z-index: -1;
+        }
+
+        h1 {
+            margin-top: 40px;
+        }
+
+        input {
+            padding: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #444;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #666;
+        }
+
+        #result {
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 0.6s ease-in;
+        }
+
+        .fade-in {
+            opacity: 1 !important;
+        }
+
+        img {
+            border-radius: 10px;
+            box-shadow: 0 0 15px #ffffff55;
+        }
+
+        /* Spinner */
+        .spinner {
+            margin: 20px auto;
+            width: 40px;
+            height: 40px;
+            border: 5px solid #ffffff33;
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>🌌 Movie Search</h1>
+
+<input type="text" id="movieInput" placeholder="Enter movie name">
+<button onclick="searchMovie()">Search</button>
+
+<div class="spinner" id="spinner"></div>
+
+<div id="result"></div>
+
+<script>
+
+const input = document.getElementById("movieInput");
+
+// ENTER key support
+input.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        searchMovie();
+    }
+});
+
+async function searchMovie() {
+
+    let movieName = input.value.trim();
+
+    if(movieName === ""){
+        return;
+    }
+
+    let spinner = document.getElementById("spinner");
+    let resultDiv = document.getElementById("result");
+
+    resultDiv.classList.remove("fade-in");
+    resultDiv.innerHTML = "";
+    spinner.style.display = "block";
+
+    try {
+        let response = await fetch("https://www.omdbapi.com/?t=" + movieName + "&apikey=e042bd2e");
+        let data = await response.json();
+
+        spinner.style.display = "none";
+
+        if (data.Response == "True") {
+            resultDiv.innerHTML =
+                "<h2>" + data.Title + " (" + data.Year + ")</h2>" +
+                "<img src='" + data.Poster + "' width='200'><br><br>" +
+                "<p><strong>Genre:</strong> " + data.Genre + "</p>" +
+                "<p><strong>Director:</strong> " + data.Director + "</p>" +
+                "<p><strong>IMDB Rating:</strong> ⭐ " + data.imdbRating + "</p>" +
+                "<p><strong>Plot:</strong> " + data.Plot + "</p>";
+        } else {
+            resultDiv.innerHTML = "Movie not found.";
+        }
+
+        // Trigger fade effect
+        setTimeout(() => {
+            resultDiv.classList.add("fade-in");
+        }, 50);
+
+    } catch(error) {
+        spinner.style.display = "none";
+        resultDiv.innerHTML = "Error fetching data.";
+        resultDiv.classList.add("fade-in");
+    }
+}
+
+</script>
+
+</body>
+</html>
