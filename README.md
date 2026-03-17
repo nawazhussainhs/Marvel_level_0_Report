@@ -259,7 +259,7 @@ For this task, I wrote an article on **Printed Circuit Board (PCB) Design**. The
 
 Click the link below to view the article:
 
-[PCB Design Article](PASTE_YOUR_ARTICLE_LINK_HERE)
+[PCB Design Article](https://github.com/nawazhussainhs/Marvel_level_0_Report/blob/main/task_7_markdown_article_pcb/pcb_design_article.md)
 
 ---
 
